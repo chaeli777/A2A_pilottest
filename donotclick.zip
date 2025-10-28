@@ -1,0 +1,14 @@
+#include <windows.h>
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
+    const char *title = "안내";
+    const char *msg =
+        "안녕하세요! \n\n"
+        "이 파일은 안전한 테스트용입니다.\n"
+        "즐거운 하루 보내세요!";
+
+    
+    MessageBoxA(NULL, msg, title, MB_OK | MB_ICONINFORMATION);
+
+    return 0;
+}

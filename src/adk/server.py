@@ -45,15 +45,77 @@ class A2AServer:
         
         @self.app.get("/.well-known/agent.json")
         async def get_agent_card():
-            """Agent Card 반환"""
+            """Agent Card 반환 (A2A 표준)"""
             card_dict = self.agent.get_agent_card()
             # URL 추가
             card_dict["url"] = f"http://localhost:{self.port}"
             return card_dict
         
+        @self.app.post("/rpc")
+        async def json_rpc_endpoint(request: dict):
+            """
+            JSON-RPC 2.0 엔드포인트 (A2A 표준)
+            
+            클라이언트가 스킬을 직접 호출할 수 있는 엔드포인트
+            """
+            # JSON-RPC 2.0 요청 검증
+            if request.get("jsonrpc") != "2.0":
+                return {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32600,
+                        "message": "Invalid Request: jsonrpc must be '2.0'"
+                    },
+                    "id": request.get("id")
+                }
+            
+            method = request.get("method")
+            params = request.get("params", {})
+            request_id = request.get("id")
+            
+            if not method:
+                return {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32600,
+                        "message": "Invalid Request: method is required"
+                    },
+                    "id": request_id
+                }
+            
+            # 스킬 존재 여부 확인
+            skill = self.agent.get_skill(method)
+            if not skill:
+                return {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32601,
+                        "message": f"Method not found: '{method}'"
+                    },
+                    "id": request_id
+                }
+            
+            # 스킬 실행
+            try:
+                result = self.agent.execute_skill(method, **params)
+                return {
+                    "jsonrpc": "2.0",
+                    "result": result,
+                    "id": request_id
+                }
+            except Exception as e:
+                return {
+                    "jsonrpc": "2.0",
+                    "error": {
+                        "code": -32603,
+                        "message": f"Internal error: {str(e)}"
+                    },
+                    "id": request_id
+                }
+        
         @self.app.post("/tasks")
         async def create_task(request: CreateTaskRequest) -> CreateTaskResponse:
-            """Task 생성"""
+            """Task 생성 (A2A 표준 - Task-based API)"""
             task = Task(
                 status="submitted",
                 input=request.input,
@@ -68,7 +130,7 @@ class A2AServer:
         
         @self.app.get("/tasks/{task_id}")
         async def get_task_status(task_id: str) -> GetTaskStatusResponse:
-            """Task 상태 조회"""
+            """Task 상태 조회 (A2A 표준)"""
             if task_id not in self.tasks_db:
                 raise HTTPException(status_code=404, detail="Task not found")
             
@@ -91,6 +153,8 @@ class A2AServer:
                 "version": self.agent.version,
                 "protocol": "A2A v1.0",
                 "agent_card": "/.well-known/agent.json",
+                "rpc_endpoint": "/rpc",
+                "task_endpoint": "/tasks",
                 "skills": [s.name for s in self.agent.get_skills()]
             }
     
@@ -139,9 +203,9 @@ class A2AServer:
         if sys.platform == 'win32':
             sys.stdout.reconfigure(encoding='utf-8')
         
-        print(f"🚀 Starting {self.agent.name} on http://{self.host}:{self.port}")
-        print(f"📋 Agent Card: http://localhost:{self.port}/.well-known/agent.json")
-        print(f"🎯 Skills: {', '.join([s.name for s in self.agent.get_skills()])}")
+        print(f" Starting {self.agent.name} on http://{self.host}:{self.port}")
+        print(f" Agent Card: http://localhost:{self.port}/.well-known/agent.json")
+        print(f" Skills: {', '.join([s.name for s in self.agent.get_skills()])}")
         print()
         
         uvicorn.run(

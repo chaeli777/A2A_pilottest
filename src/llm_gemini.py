@@ -19,7 +19,7 @@ def _get_model():
     if not current_key:
         return None
     
-    # API 키가 변경되면 모델 재생성
+    # API 키가 변경되면 모델도 재생성!
     if _model is None or _configured_key != current_key:
         genai.configure(api_key=current_key)
         _model = genai.GenerativeModel(current_model)

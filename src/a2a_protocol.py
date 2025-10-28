@@ -98,14 +98,14 @@ class Task(BaseModel):
 
 
 class Message(BaseModel):
-    """A2A Message (대화형 요청/응답)"""
+    """A2A Message"""
     role: Literal["user", "agent", "system"]
     content: str
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 
 class Artifact(BaseModel):
-    """A2A Artifact (작업 결과물)"""
+    """A2A Artifact"""
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     type: str  # "text", "json", "image", etc.
     content: Any

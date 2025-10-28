@@ -45,7 +45,7 @@ def is_api_key_set(service: str) -> bool:
 def show_status():
     """현재 API 키 설정 상태"""
     print("\n" + "=" * 60)
-    print("🔑 API Key Status")
+    print("API Key Status")
     print("=" * 60)
     
     keys = {
@@ -58,9 +58,9 @@ def show_status():
         key = os.getenv(f"{env_var}_API_KEY") if env_var != "OLLAMA_BASE_URL" else os.getenv(env_var)
         if key:
             masked = key[:8] + "..." if len(key) > 8 else "***"
-            print(f"  ✅ {name:<20} : {masked}")
+            print(f"   {name:<20} : {masked}")
         else:
-            print(f"  ❌ {name:<20} : Not set")
+            print(f"   {name:<20} : Not set")
     
     print("=" * 60)
     print()

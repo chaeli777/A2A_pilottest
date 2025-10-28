@@ -1,12 +1,12 @@
 pyyaml
 structlog
 pytz
-python-dotenv>=1.0.0                # .env 파일 로드 ⭐
+python-dotenv>=1.0.0               
 
 # LLM 제공자들
-openai>=1.40.0                      # OpenAI GPT
-google-generativeai>=0.3.0          # Google Gemini ⭐
-requests>=2.31.0                    # Ollama (로컬 LLM)
+openai>=1.40.0                      
+google-generativeai>=0.3.0        
+requests>=2.31.0                   
 
 # HTTP 서버 및 A2A 프로토콜 지원
 fastapi>=0.104.0
