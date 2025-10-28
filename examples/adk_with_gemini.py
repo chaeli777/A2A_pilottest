@@ -1,6 +1,5 @@
 """
 Google Gemini를 사용한 실제 LLM 기반 에이전트
-진짜 AI 협업!
 """
 import sys
 import os
