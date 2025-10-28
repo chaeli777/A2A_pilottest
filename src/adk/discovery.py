@@ -84,7 +84,7 @@ class A2ADiscoveryClient:
             return agent_info
             
         except Exception as e:
-            print(f"⚠️  Failed to register agent {agent_url}: {e}")
+            print(f" Failed to register agent {agent_url}: {e}")
             return None
     
     def register_agents(self, agent_urls: List[str]) -> List[AgentInfo]:
@@ -248,7 +248,7 @@ class A2ADiscoveryClient:
     def print_agent_selection_analysis(self, skill_agent_map: Dict[str, AgentInfo]):
         """에이전트 선택 결과 분석 출력"""
         print("=" * 80)
-        print("🎯 에이전트 선택 분석")
+        print(" 에이전트 선택 분석")
         print("=" * 80)
         print()
         
@@ -264,7 +264,7 @@ class A2ADiscoveryClient:
         print()
         
         for agent_name, skills in agent_skills.items():
-            print(f"📌 {agent_name}")
+            print(f" {agent_name}")
             print(f"   담당 스킬 ({len(skills)}개): {', '.join(skills)}")
         print()
     
@@ -327,7 +327,7 @@ class A2ADiscoveryClient:
         print()
         
         if not self.agents:
-            print("⚠️  No agents registered.")
+            print("  No agents registered.")
             return
         
         for i, agent in enumerate(self.agents.values(), 1):
